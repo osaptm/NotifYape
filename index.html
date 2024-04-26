@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="registros">
+
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js";
+        import { getFirestore, query, collection, getDocs, orderBy, limit  } from 'https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js';
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDK8B2nIWJ8FxhZEv-KcIYcrM7qFofjvN8",
+          authDomain: "yape-c54ec.firebaseapp.com",
+          projectId: "yape-c54ec",
+          storageBucket: "yape-c54ec.appspot.com",
+          messagingSenderId: "814644672078",
+          appId: "1:814644672078:web:0be6f6dc738e1778f6f51f"
+        };      
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function getNotif(db) {
+            const notifRef = collection(db, 'notificaciones');
+            const queryx =  query(notifRef, orderBy("date", "desc"), limit(50));
+            const querySnapshot = await getDocs(queryx);
+            const notifList = querySnapshot.docs.map(doc => doc.data());
+        return notifList;
+        }
+        
+        async function Mostrar(){
+            const array = await getNotif(db);
+            array.forEach(element => {
+
+                var contenedor = document.getElementById("registros");
+                var parrafo = document.createElement("p");
+                parrafo.textContent = `${element.date} - ${element.mensaje}` ;
+                contenedor.appendChild(parrafo);
+
+            });
+        }
+        Mostrar()
+      </script>
+</body>
+</html>
